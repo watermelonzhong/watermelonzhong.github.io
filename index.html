@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watermelon Zhong</title>
+  <style>
+    /* ========== Reset & Base ========== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #3d3d3d;
+      background: #f5f5f5;
+      line-height: 1.6;
+    }
+    a { color: #2a7ae2; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ========== Layout ========== */
+    #main {
+      display: flex;
+      max-width: 1280px;
+      margin: 0 auto;
+      min-height: 100vh;
+    }
+
+    /* ========== Sidebar ========== */
+    .sidebar {
+      width: 300px;
+      min-width: 300px;
+      background: #fff;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      border-right: 1px solid #e8e8e8;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    .sidebar .profile-img {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #e0e0e0;
+      margin-bottom: 1rem;
+    }
+    .sidebar .profile-placeholder {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      margin: 0 auto 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: #fff;
+    }
+    .sidebar h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+      color: #1a1a1a;
+    }
+    .sidebar .tagline {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 1.2rem;
+      font-style: italic;
+    }
+    .sidebar .info-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+      color: #555;
+      margin-bottom: 0.4rem;
+    }
+    .sidebar .info-item svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      fill: #777;
+    }
+    .sidebar .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 0.8rem;
+      margin-top: 1.2rem;
+      flex-wrap: wrap;
+    }
+    .sidebar .social-links a {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.8rem;
+      color: #555;
+      padding: 0.25rem 0.6rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+    .sidebar .social-links a:hover {
+      background: #f0f0f0;
+      text-decoration: none;
+      border-color: #aaa;
+    }
+    .sidebar .social-links svg {
+      width: 16px;
+      height: 16px;
+      fill: #555;
+    }
+
+    /* ========== Content ========== */
+    .content {
+      flex: 1;
+      padding: 2rem 2.5rem;
+      background: #fff;
+      min-width: 0;
+    }
+    .content section {
+      margin-bottom: 2.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid #eee;
+    }
+    .content section:last-child {
+      border-bottom: none;
+    }
+    .content h2 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 1rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 2px solid #2a7ae2;
+      display: inline-block;
+    }
+    .content h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #333;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .content p {
+      font-size: 0.95rem;
+      color: #444;
+      margin-bottom: 0.8rem;
+    }
+
+    /* ========== News ========== */
+    .news-list {
+      list-style: none;
+      max-height: 400px;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+    .news-list li {
+      padding: 0.4rem 0;
+      font-size: 0.9rem;
+      border-bottom: 1px dashed #eee;
+      display: flex;
+      gap: 0.6rem;
+    }
+    .news-list li:last-child { border-bottom: none; }
+    .news-date {
+      color: #2a7ae2;
+      font-weight: 600;
+      white-space: nowrap;
+      min-width: 80px;
+      font-size: 0.82rem;
+    }
+
+    /* ========== Publications ========== */
+    .pub-item {
+      margin-bottom: 1.2rem;
+      padding: 0.8rem;
+      background: #fafafa;
+      border-radius: 6px;
+      border-left: 3px solid #2a7ae2;
+    }
+    .pub-venue {
+      display: inline-block;
+      background: #2a7ae2;
+      color: #fff;
+      font-size: 0.72rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 3px;
+      margin-right: 0.5rem;
+      font-weight: 600;
+    }
+    .pub-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #1a1a1a;
+    }
+    .pub-authors {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 0.2rem;
+    }
+    .pub-links a {
+      font-size: 0.8rem;
+      margin-right: 0.8rem;
+    }
+
+    /* ========== Education / Experience ========== */
+    .timeline-item {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 0.8rem;
+      align-items: baseline;
+    }
+    .timeline-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .timeline-text { font-size: 0.92rem; color: #444; }
+    .timeline-text strong { color: #1a1a1a; }
+
+    /* ========== Footer ========== */
+    #footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.8rem;
+      color: #999;
+      background: #f5f5f5;
+      border-top: 1px solid #e8e8e8;
+    }
+
+    /* ========== Responsive ========== */
+    @media (max-width: 768px) {
+      #main { flex-direction: column; }
+      .sidebar {
+        width: 100%;
+        min-width: unset;
+        height: auto;
+        position: static;
+        border-right: none;
+        border-bottom: 1px solid #e8e8e8;
+        padding: 1.5rem 1rem;
+      }
+      .content { padding: 1.5rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="main">
+
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="sidebar">
+      <!-- 头像 - 替换为你的照片路径 -->
+      <div class="profile-placeholder">🖼️</div>
+      <!-- 有照片后替换为: <img class="profile-img" src="images/profile.jpg" alt="profile"> -->
+
+      <h1>Watermelon Zhong</h1>
+      <p class="tagline">Stay hungry, stay foolish.</p>
+
+      <div class="info-item">
+        <svg viewBox="0 0 24 24"><path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/></svg>
+        <span>Zhejiang University</span>
+      </div>
+      <div class="info-item">
+        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+        <span>Hangzhou, China</span>
+      </div>
+      <div class="info-item">
+        <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+        <span>your-email@example.com</span>
+      </div>
+
+      <div class="social-links">
+        <a href="https://github.com/watermelonzhong" target="_blank">
+          <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
+        <a href="#" target="_blank">
+          <svg viewBox="0 0 24 24"><path d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zm-4.5 7.5l1.572 2.626L7.5 14.5h3.548l1.572-2.626-1.572-2.626h3.548l2.624 4.374-2.624 4.376H7.5z"/></svg>
+          Scholar
+        </a>
+        <a href="#" target="_blank">
+          <svg viewBox="0 0 24 24"><path d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14m-.5 15.5v-5.3a3.26 3.26 0 00-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 011.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 001.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 00-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+          LinkedIn
+        </a>
+      </div>
+    </aside>
+
+    <!-- ==================== CONTENT ==================== -->
+    <article class="content">
+
+      <!-- ===== About ===== -->
+      <section id="about">
+        <h2>👋 About Me</h2>
+        <p>
+          Hi! I'm <strong>Watermelon Zhong</strong>, a student at Zhejiang University.
+          My research interests lie in the area of <strong>Process Mining</strong> and <strong>Data Analysis</strong>.
+          Feel free to reach out if you are interested in academic collaboration.
+        </p>
+      </section>
+
+      <!-- ===== News ===== -->
+      <section id="news">
+        <h2>🔥 News</h2>
+        <ul class="news-list">
+          <li>
+            <span class="news-date">2025.06</span>
+            <span>🎉 Website launched! This personal page is now live.</span>
+          </li>
+          <!-- 后续添加更多新闻
+          <li>
+            <span class="news-date">2025.XX</span>
+            <span>🎉 Paper accepted at XXXX!</span>
+          </li>
+          -->
+        </ul>
+      </section>
+
+      <!-- ===== Publications ===== -->
+      <section id="publications">
+        <h2>📝 Publications</h2>
+        <p style="color:#999; font-style:italic;">Coming soon...</p>
+        <!-- 后续添加出版物示例:
+        <div class="pub-item">
+          <span class="pub-venue">CONF 2025</span>
+          <span class="pub-title">Paper Title Here</span>
+          <p class="pub-authors"><strong>Your Name</strong>, Co-author One, Co-author Two</p>
+          <p class="pub-links">
+            <a href="#">[paper]</a>
+            <a href="#">[code]</a>
+          </p>
+        </div>
+        -->
+      </section>
+
+      <!-- ===== Honors & Awards ===== -->
+      <section id="honors">
+        <h2>🎖️ Honors and Awards</h2>
+        <ul style="list-style: none; font-size: 0.92rem; color: #444;">
+          <li style="margin-bottom: 0.4rem;">• Scholarship Name (Year)</li>
+          <li style="margin-bottom: 0.4rem;">• Award Name (Year)</li>
+        </ul>
+      </section>
+
+      <!-- ===== Education ===== -->
+      <section id="education">
+        <h2>📖 Education</h2>
+        <div class="timeline-item">
+          <span class="timeline-icon">🎓</span>
+          <span class="timeline-text">
+            <strong>B.S. in XXX</strong>, Zhejiang University. Sep. 2022 - Present.
+          </span>
+        </div>
+      </section>
+
+      <!-- ===== Internships ===== -->
+      <section id="internships">
+        <h2>💻 Internships</h2>
+        <div class="timeline-item">
+          <span class="timeline-icon">🧐</span>
+          <span class="timeline-text">
+            <strong>Company Name</strong>, City. Date - Date.
+          </span>
+        </div>
+      </section>
+
+      <!-- ===== Service ===== -->
+      <section id="service">
+        <h2>📑 Academic Service</h2>
+        <p style="font-size: 0.92rem; color: #444;">
+          <strong>Reviewer:</strong> Conference Name.<br>
+          <strong>Teaching Assistant:</strong> Course Name, University, Year.
+        </p>
+      </section>
+
+      <!-- ===== Miscellaneous ===== -->
+      <section id="misc">
+        <h2>✨ Miscellaneous</h2>
+        <p>
+          Apart from academic pursuits, I enjoy various activities and hobbies.
+        </p>
+      </section>
+
+    </article>
+  </div>
+
+  <div id="footer">
+    <p>&copy; 2025 Watermelon Zhong. Powered by GitHub Pages.</p>
+  </div>
+
+</body>
+</html>
